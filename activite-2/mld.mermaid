@@ -1,0 +1,37 @@
+erDiagram
+    joueur {
+        SERIAL id_joueur PK
+        VARCHAR50 pseudo UK
+        VARCHAR100 email UK
+        VARCHAR255 mot_de_passe
+        TIMESTAMP date_inscription
+    }
+
+    carte {
+        SERIAL id_carte PK
+        VARCHAR10 valeur
+        VARCHAR10 enseigne
+        INT points
+    }
+
+    partie {
+        SERIAL id_partie PK
+        INT id_joueur FK
+        TIMESTAMP date_debut
+        VARCHAR20 statut
+        VARCHAR20 resultat
+        INT score_joueur
+        INT score_croupier
+    }
+
+    main_carte {
+        SERIAL id_main_carte PK
+        INT id_partie FK
+        INT id_carte FK
+        VARCHAR10 appartenance
+        INT ordre
+    }
+
+    joueur ||--o{ partie : "1 joueur → N parties"
+    partie ||--|{ main_carte : "1 partie → N cartes distribuées"
+    carte ||--o{ main_carte : "1 carte → utilisée dans N parties"

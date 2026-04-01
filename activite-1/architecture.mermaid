@@ -1,0 +1,24 @@
+graph TB
+    subgraph CLIENT["CLIENT - React (Vite)"]
+        UI["Interface utilisateur<br/>Affichage cartes, score, boutons"]
+        HTTP["Service HTTP (fetch/axios)"]
+        UI --> HTTP
+    end
+
+    subgraph SERVEUR["SERVEUR - Node.js + Express"]
+        API["API REST"]
+        LOGIC["Logique métier<br/>Règles du Blackjack<br/>IA Croupier"]
+        ORM["ORM (Sequelize / Prisma)"]
+        API --> LOGIC
+        LOGIC --> ORM
+    end
+
+    subgraph BDD["BASE DE DONNÉES - PostgreSQL"]
+        JOUEUR["Joueur"]
+        PARTIE["Partie"]
+        CARTE["Carte"]
+        MAIN["Main (cartes en jeu)"]
+    end
+
+    HTTP -- "POST /api/parties<br/>POST /api/parties/:id/piocher<br/>POST /api/parties/:id/rester<br/>GET /api/joueurs/:id/historique" --> API
+    ORM --> BDD

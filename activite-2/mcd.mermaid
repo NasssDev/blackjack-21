@@ -1,0 +1,34 @@
+erDiagram
+    JOUEUR {
+        int id_joueur PK
+        string pseudo
+        string email
+        string mot_de_passe
+        datetime date_inscription
+    }
+
+    PARTIE {
+        int id_partie PK
+        datetime date_debut
+        string statut
+        string resultat
+        int score_joueur
+        int score_croupier
+    }
+
+    CARTE {
+        int id_carte PK
+        string valeur
+        string enseigne
+        int points
+    }
+
+    MAIN_CARTE {
+        int id_main_carte PK
+        string appartenance
+        int ordre
+    }
+
+    JOUEUR ||--o{ PARTIE : "joue"
+    PARTIE ||--|{ MAIN_CARTE : "contient"
+    CARTE ||--o{ MAIN_CARTE : "est distribuée dans"

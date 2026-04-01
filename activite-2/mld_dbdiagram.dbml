@@ -1,0 +1,35 @@
+// MLD - Blackjack 21
+// À coller directement dans https://dbdiagram.io
+
+Table joueur {
+  id_joueur SERIAL [pk, increment]
+  pseudo VARCHAR(50) [not null, unique]
+  email VARCHAR(100) [not null, unique]
+  mot_de_passe VARCHAR(255) [not null]
+  date_inscription TIMESTAMP [not null, default: `CURRENT_TIMESTAMP`]
+}
+
+Table carte {
+  id_carte SERIAL [pk, increment]
+  valeur VARCHAR(10) [not null, note: 'As, 2, 3, ..., 10, Valet, Dame, Roi']
+  enseigne VARCHAR(10) [not null, note: 'Coeur, Carreau, Trefle, Pique']
+  points INT [not null, note: '1-11 pour As, 2-10, 10 pour figures']
+}
+
+Table partie {
+  id_partie SERIAL [pk, increment]
+  id_joueur INT [not null, ref: > joueur.id_joueur]
+  date_debut TIMESTAMP [not null, default: `CURRENT_TIMESTAMP`]
+  statut VARCHAR(20) [not null, note: 'en_cours, terminee', default: 'en_cours']
+  resultat VARCHAR(20) [note: 'victoire, defaite, egalite, null si en cours']
+  score_joueur INT [default: 0]
+  score_croupier INT [default: 0]
+}
+
+Table main_carte {
+  id_main_carte SERIAL [pk, increment]
+  id_partie INT [not null, ref: > partie.id_partie]
+  id_carte INT [not null, ref: > carte.id_carte]
+  appartenance VARCHAR(10) [not null, note: 'joueur ou croupier']
+  ordre INT [not null, note: 'Ordre de distribution de la carte']
+}

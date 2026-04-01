@@ -1,0 +1,24 @@
+sequenceDiagram
+    actor J as Joueur (Client React)
+    participant API as API REST (Express)
+    participant BDD as PostgreSQL
+
+    J->>API: POST /api/parties (nouvelle partie)
+    API->>BDD: Créer partie + mélanger deck
+    API->>BDD: Distribuer 2 cartes joueur + 2 cartes croupier
+    BDD-->>API: Partie créée
+    API-->>J: Cartes joueur + 1 carte visible croupier
+
+    loop Tour du joueur
+        J->>API: POST /api/parties/:id/piocher
+        API->>BDD: Ajouter carte à la main du joueur
+        BDD-->>API: Nouvelle carte + total
+        API-->>J: Carte piochée + nouveau score
+        Note over J,API: Si score > 21 → BUST (défaite)
+    end
+
+    J->>API: POST /api/parties/:id/rester
+    API->>API: IA Croupier pioche jusqu'à ≥ 17
+    API->>BDD: Sauvegarder résultat partie
+    BDD-->>API: Partie terminée
+    API-->>J: Résultat (victoire/défaite/égalité) + scores finaux
