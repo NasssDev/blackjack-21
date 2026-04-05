@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Joueur {
+  id              Int       @id @default(autoincrement()) @map("id_joueur")
+  pseudo          String    @unique @db.VarChar(50)
+  email           String    @unique @db.VarChar(100)
+  motDePasse      String    @map("mot_de_passe") @db.VarChar(255)
+  dateInscription DateTime  @default(now()) @map("date_inscription")
+  parties         Partie[]
+
+  @@map("joueur")
+}
+
+model Carte {
+  id       Int         @id @default(autoincrement()) @map("id_carte")
+  valeur   String      @db.VarChar(10)
+  enseigne String      @db.VarChar(10)
+  points   Int
+  mains    MainCarte[]
+
+  @@map("carte")
+}
+
+model Partie {
+  id            Int         @id @default(autoincrement()) @map("id_partie")
+  joueurId      Int         @map("id_joueur")
+  dateDebut     DateTime    @default(now()) @map("date_debut")
+  statut        String      @default("en_cours") @db.VarChar(20)
+  resultat      String?     @db.VarChar(20)
+  scoreJoueur   Int         @default(0) @map("score_joueur")
+  scoreCroupier Int         @default(0) @map("score_croupier")
+  joueur        Joueur      @relation(fields: [joueurId], references: [id])
+  mainCartes    MainCarte[]
+
+  @@map("partie")
+}
+
+model MainCarte {
+  id           Int    @id @default(autoincrement()) @map("id_main_carte")
+  partieId     Int    @map("id_partie")
+  carteId      Int    @map("id_carte")
+  appartenance String @db.VarChar(10)
+  ordre        Int
+  partie       Partie @relation(fields: [partieId], references: [id])
+  carte        Carte  @relation(fields: [carteId], references: [id])
+
+  @@map("main_carte")
+}
